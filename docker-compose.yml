@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./deploy/local/postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    networks:
+      backend:
+        aliases:
+          - "db"
+
+networks:
+  backend: {}
+
+volumes:
+  dbdata:
+
+  
