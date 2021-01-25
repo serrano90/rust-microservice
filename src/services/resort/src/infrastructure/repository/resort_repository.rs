@@ -1,8 +1,9 @@
-use diesel::QueryDsl;
 /**
  * Resort Repository ORM
 */
 use diesel::RunQueryDsl;
+use diesel::QueryDsl;
+use diesel::prelude::*;
 
 use crate::domain::dto::resort::ResortDTO;
 use crate::domain::dto::resort::ResortDTOList;
@@ -37,19 +38,19 @@ impl ResortRepository for ORMResortRepository {
     fn find(&self, id: i32) -> ResortDTO {
         let conn = &self.db.conn;
 
-        let result = resorts::table
-            .find(id)
-            .first(conn)
-            .expect("Error loading resorts");
+        let result = resorts_list.find(id).get_result::<ResortDTO>(conn).unwrap();
 
         result
     }
 
     fn delete(&self, id: i32) -> bool {
-        false
+        let conn = &self.db.conn;
+        diesel::delete(resorts::dsl::resorts.filter(resorts::id.eq(id)))
+            .execute(conn)
+            .is_ok()
     }
 
-    fn update(&self, resort: Resort) -> Result<(), diesel::result::Error> {
+    fn update(&self, resort: Resort) -> bool {
         let conn = &self.db.conn;
 
         let new_resort = NewResort {
@@ -58,9 +59,8 @@ impl ResortRepository for ORMResortRepository {
 
         diesel::update(resorts::dsl::resorts.find(resort.get_id()))
             .set(new_resort)
-            .execute(conn)?;
-
-        Ok(())
+            .execute(conn)
+            .is_ok()
     }
 
     fn create(&self, resort: Resort) -> ResortDTO {

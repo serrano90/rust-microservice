@@ -17,10 +17,88 @@ services:
         aliases:
           - "db"
 
+  customerservice:
+    container_name: customerservice
+    build: ./src/services/customer
+    env_file:
+      - ./configs/docker/customer/.env.dev
+    depends_on:
+      - db
+    links:
+      - db
+      - webbackofficeapigw
+    restart: always
+    networks:
+      backend:
+        aliases:
+          - "customerservice"
+
+  resortservice:
+    container_name: resortservice
+    build: ./src/services/resort
+    env_file:
+      - ./configs/docker/resort/.env.dev
+    depends_on:
+      - db
+    links:
+      - db
+      - webbackofficeapigw
+    restart: always
+    networks:
+      backend:
+        aliases:
+          - "resortservice"
+
+  webbackofficeapigw:
+    build:
+      context: ./src/apigateway/envoy
+    ports:
+      - "80:80"
+      - "9901:9901"
+      - "8080:8080"
+    networks:
+      backend:
+        aliases:
+          - "webbackofficeapigw"
+
+  # customerapp:
+  #   container_name: customerapp
+  #   build:
+  #     context: ./src/web/customer-app
+  #   env_file:
+  #     - ./configs/docker/customerapp/.env.dev
+  #   volumes:
+  #     - '.:/app'
+  #     - '/app/node_modules'
+  #   ports:
+  #     - 3001:3000
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+  #   networks:
+  #     backend:
+  #       aliases:
+  #         - "webbackofficeapigw"
+
+  # backofficeapp:
+  #   container_name: backofficeapp
+  #   build:
+  #     context: ./src/web/backoffice-app
+  #   env_file:
+  #     - ./configs/docker/backofficeapp/.env.dev
+  #   volumes:
+  #     - '.:/app'
+  #     - '/app/node_modules'
+  #   ports:
+  #     - 3002:3000
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+  #   networks:
+  #     backend:
+  #       aliases:
+  #         - "webbackofficeapigw"   
+
 networks:
   backend: {}
 
 volumes:
   dbdata:
-
-  
