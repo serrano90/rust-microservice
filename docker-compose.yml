@@ -61,23 +61,23 @@ services:
         aliases:
           - "webbackofficeapigw"
 
-  # customerapp:
-  #   container_name: customerapp
-  #   build:
-  #     context: ./src/web/customer-app
-  #   env_file:
-  #     - ./configs/docker/customerapp/.env.dev
-  #   volumes:
-  #     - '.:/app'
-  #     - '/app/node_modules'
-  #   ports:
-  #     - 3001:3000
-  #   environment:
-  #     - CHOKIDAR_USEPOLLING=true
-  #   networks:
-  #     backend:
-  #       aliases:
-  #         - "webbackofficeapigw"
+  customerapp:
+    container_name: customerapp
+    build:
+      context: ./src/web/customer-app
+    env_file:
+      - ./configs/docker/customerapp/.env.dev
+    volumes:
+      - ./src/web/customer-app:/app
+      - /app/node_modules
+    ports:
+      - 3001:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      backend:
+        aliases:
+          - "webbackofficeapigw"
 
   # backofficeapp:
   #   container_name: backofficeapp
