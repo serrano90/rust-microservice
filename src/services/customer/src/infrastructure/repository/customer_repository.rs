@@ -2,7 +2,6 @@
  * ORM Customer Repository
  */
 use diesel::RunQueryDsl;
-use diesel::prelude::*;
 
 use crate::domain::dto::customer::CustomerDTO;
 use crate::domain::dto::customer::CustomerDTOList;
@@ -11,7 +10,7 @@ use crate::domain::repository::customer_repository::CustomerRepository;
 use crate::infrastructure::models::customers::NewCustomer;
 use crate::infrastructure::repository::connection::ConnectionManager;
 use crate::schema::customers;
-use crate::schema::customers::dsl::customers as other_customers;
+use crate::schema::customers::dsl::customers as customers_list;
 
 pub struct ORMCustomerRepository {
     db: ConnectionManager,
@@ -27,7 +26,7 @@ impl CustomerRepository for ORMCustomerRepository {
     fn all(&self, filter: String, page: i32, limit: i32) -> CustomerDTOList {
         let conn = &self.db.conn;
 
-        let results = other_customers
+        let results = customers_list
         .load::<CustomerDTO>(conn)
         .expect("Error loading customers");
 

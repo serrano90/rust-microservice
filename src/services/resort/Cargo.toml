@@ -1,5 +1,5 @@
 [package]
-name = "customer"
+name = "resort"
 version = "0.1.0"
 authors = ["Andros Serrano <serrano.hernandez90@gmail.com>"]
 edition = "2018"
